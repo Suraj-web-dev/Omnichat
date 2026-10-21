@@ -24,7 +24,12 @@ export default function App() {
   } = useChat();
 
   const [layoutMode, setLayoutMode] = useState('grid'); // 'grid' | 'stacked'
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024;
+    }
+    return true;
+  });
   const messagesEndRef = useRef(null);
 
   const messages = activeConversation?.messages || [];
@@ -54,6 +59,7 @@ export default function App() {
         <ChatHeader
           activeConversation={activeConversation}
           layoutMode={layoutMode}
+          sidebarOpen={sidebarOpen}
           onChangeLayout={setLayoutMode}
           onToggleSidebar={() => setSidebarOpen(prev => !prev)}
         />
