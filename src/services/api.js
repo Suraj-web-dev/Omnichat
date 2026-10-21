@@ -94,3 +94,21 @@ export async function selectWinnerModel(conversationId, messageId, selectedModel
   return json.data;
 }
 
+/**
+ * Synthesize all 3 model answers into a unified Master Answer
+ */
+export async function synthesizeModelResponses(conversationId, messageId, prompt) {
+  const res = await fetch(`${API_BASE_URL}/conversations/${conversationId}/messages/${messageId}/synthesize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Failed to synthesize models');
+  }
+  const json = await res.json();
+  return json.data;
+}
+
+

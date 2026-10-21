@@ -34,6 +34,15 @@ export const AVAILABLE_MODELS = [
   }
 ];
 
+export const SYNTHESIS_MODEL_INFO = {
+  id: 'synthesized',
+  name: 'Master Synthesis',
+  provider: 'Tri-Model Consensus (Groq + Cohere + Gemini)',
+  badgeColor: 'border-zinc-700 bg-zinc-800 text-zinc-100',
+  avatarBg: 'bg-zinc-700 text-white border-zinc-600',
+  tagline: 'Merged consensus and ultimate best points of all 3 models'
+};
+
 export const QUICK_PROMPTS = [
   {
     title: 'React vs Vue in 2026',

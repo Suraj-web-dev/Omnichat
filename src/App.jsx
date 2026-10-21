@@ -14,13 +14,15 @@ export default function App() {
     activeChatId,
     activeConversation,
     isGenerating,
+    synthesizingMessageId,
     setActiveChatId,
     createNewChat,
     deleteChat,
     renameChat,
     sendMessage,
     selectModelResponse,
-    unselectModelResponse
+    unselectModelResponse,
+    synthesizeModelAnswers
   } = useChat();
 
   const [layoutMode, setLayoutMode] = useState('grid'); // 'grid' | 'stacked'
@@ -93,6 +95,8 @@ export default function App() {
                     message={message}
                     layoutMode={layoutMode}
                     onSelectModel={selectModelResponse}
+                    onSynthesize={synthesizeModelAnswers}
+                    isSynthesizing={synthesizingMessageId === message.id}
                     isGenerating={isGenerating}
                   />
                 );

@@ -1,5 +1,5 @@
 import { Conversation } from '../models/Conversation.js';
-import { generate3ModelResponses } from '../services/aiService.js';
+import { generate3ModelResponses, synthesizeModelResponses } from '../services/aiService.js';
 import { inMemoryConversations } from './conversationController.js';
 
 function generateId() {
@@ -129,6 +129,73 @@ export async function selectWinningModel(req, res) {
     });
   } catch (err) {
     console.error('[MessageController] Error selecting winner model:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+// 3. Synthesize all 3 model answers into 1 unified Master Answer
+export async function synthesizeAndSelectWinner(req, res) {
+  try {
+    const { id: conversationId, messageId } = req.params;
+    const isDbConnected = Conversation.db?.readyState === 1;
+
+    let conversation;
+    if (isDbConnected) {
+      conversation = await Conversation.findOne({ id: conversationId });
+    } else {
+      conversation = inMemoryConversations.find(c => c.id === conversationId);
+    }
+
+    if (!conversation) {
+      return res.status(404).json({ success: false, error: 'Conversation not found' });
+    }
+
+    const msgIndex = conversation.messages.findIndex(m => m.id === messageId);
+    if (msgIndex === -1) {
+      return res.status(404).json({ success: false, error: 'Message not found' });
+    }
+
+    const targetMsg = conversation.messages[msgIndex];
+
+    // Find the original user prompt for context
+    let prompt = req.body.prompt;
+    if (!prompt) {
+      if (msgIndex > 0 && conversation.messages[msgIndex - 1]?.sender === 'user') {
+        prompt = conversation.messages[msgIndex - 1].text;
+      } else {
+        prompt = conversation.title || 'User Inquiry';
+      }
+    }
+
+    console.log(`[MessageController] Synthesizing 3 models for message: ${messageId}`);
+    const synthesizedResult = await synthesizeModelResponses(prompt, targetMsg.models);
+
+    // Save synthesized result in message models
+    if (targetMsg.models instanceof Map) {
+      targetMsg.models.set('synthesized', synthesizedResult);
+    } else {
+      if (!targetMsg.models) targetMsg.models = {};
+      targetMsg.models['synthesized'] = synthesizedResult;
+    }
+
+    targetMsg.selectedModelId = 'synthesized';
+    conversation.updatedAt = new Date().toISOString();
+
+    if (isDbConnected) {
+      conversation.markModified('messages');
+      await conversation.save();
+    }
+
+    return res.json({
+      success: true,
+      message: 'Models successfully synthesized into master response',
+      data: {
+        message: targetMsg,
+        synthesized: synthesizedResult
+      }
+    });
+  } catch (err) {
+    console.error('[MessageController] Error synthesizing models:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 }

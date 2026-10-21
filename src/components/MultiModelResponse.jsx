@@ -5,7 +5,9 @@ import {
   Check,
   Clock,
   Cpu,
-  ArrowRight
+  ArrowRight,
+  Sparkles,
+  Zap
 } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 import { AVAILABLE_MODELS } from '../data/dummyData';
@@ -15,10 +17,13 @@ export default function MultiModelResponse({
   message,
   layoutMode = 'grid',
   onSelectModel,
+  onSynthesize,
+  isSynthesizing = false,
   isGenerating
 }) {
   const [activeTab, setActiveTab] = useState('gpt-4o');
   const modelsData = message.models || {};
+  const areModelsReady = !isGenerating && Object.values(modelsData).some(m => m?.content && !m?.loading);
 
   return (
     <div className="my-6 px-2 sm:px-4">
@@ -27,7 +32,7 @@ export default function MultiModelResponse({
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
           <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
-            3 Models Compared • Choose one to continue
+            3 Models Compared • Choose one or Synthesize all 3
           </span>
         </div>
 
@@ -47,6 +52,47 @@ export default function MultiModelResponse({
             </button>
           ))}
         </div>
+      </div>
+
+      {/* AI Consensus & Master Synthesis Banner */}
+      <div className="mb-4 p-3 sm:p-3.5 rounded-xl bg-gradient-to-r from-zinc-900 via-zinc-900/90 to-zinc-900 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0">
+            <Sparkles className="w-4 h-4 text-zinc-200" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-zinc-100">AI Consensus & Synthesis</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-800 text-zinc-300 border border-zinc-700 rounded">
+                Master Model
+              </span>
+            </div>
+            <p className="text-[11px] text-zinc-400">
+              Can't choose? Merge the best points, clean code, and insights of Groq, Cohere & Gemini into 1 master response.
+            </p>
+          </div>
+        </div>
+
+        {onSynthesize && (
+          <button
+            onClick={() => onSynthesize(message.id)}
+            disabled={!areModelsReady || isSynthesizing}
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 bg-zinc-100 hover:bg-white text-zinc-950 font-medium text-xs rounded-lg transition-all active:scale-[0.98] disabled:opacity-40 cursor-pointer shadow-sm shrink-0"
+            title="Combine best insights of all 3 models"
+          >
+            {isSynthesizing ? (
+              <>
+                <Sparkles className="w-3.5 h-3.5 animate-spin text-zinc-900" />
+                <span>Synthesizing Best of 3...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3.5 h-3.5 text-zinc-900" />
+                <span>Synthesize Master Answer</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* Grid or Stacked View */}
@@ -164,9 +210,14 @@ function ModelResponseCard({
         </div>
 
         {/* Latency */}
-        <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800/80 shrink-0">
-          <Clock className="w-3 h-3 text-zinc-400" />
+        <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-300 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800/80 shrink-0">
+          <Zap className="w-3 h-3 text-zinc-400" />
           <span>{data.latency || '...'}</span>
+          {data.tokens ? (
+            <span className="text-[10px] text-zinc-500 border-l border-zinc-800 pl-1.5 ml-0.5 hidden sm:inline">
+              {data.tokens} tokens
+            </span>
+          ) : null}
         </div>
       </div>
 

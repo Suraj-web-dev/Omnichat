@@ -6,7 +6,9 @@ import {
   Copy,
   Check,
   RefreshCw,
-  Layers
+  Layers,
+  Sparkles,
+  Zap
 } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 import { AVAILABLE_MODELS } from '../data/dummyData';
@@ -21,14 +23,24 @@ export default function SelectedMessage({
   const [copied, setCopied] = useState(false);
 
   const chosenModelId = message.selectedModelId;
-  const chosenModel = AVAILABLE_MODELS.find(m => m.id === chosenModelId) || {
-    id: chosenModelId,
-    name: 'AI Model',
-    provider: 'AI Provider'
-  };
+  const isSynthesized = chosenModelId === 'synthesized';
+
+  const chosenModel = isSynthesized
+    ? {
+        id: 'synthesized',
+        name: 'Master Synthesis (Consensus)',
+        provider: 'Groq + Cohere + Gemini'
+      }
+    : AVAILABLE_MODELS.find(m => m.id === chosenModelId) || {
+        id: chosenModelId,
+        name: 'AI Model',
+        provider: 'AI Provider'
+      };
 
   const chosenModelData = message.models?.[chosenModelId] || {};
-  const alternativeModels = AVAILABLE_MODELS.filter(m => m.id !== chosenModelId);
+  const alternativeModels = isSynthesized
+    ? AVAILABLE_MODELS
+    : AVAILABLE_MODELS.filter(m => m.id !== chosenModelId);
 
   const handleCopy = () => {
     if (!chosenModelData.content) return;
@@ -43,15 +55,24 @@ export default function SelectedMessage({
         {/* Selected Model Top Ribbon */}
         <div className="px-4 py-2.5 bg-zinc-800/80 border-b border-zinc-700/70 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-zinc-700 text-zinc-100 border border-zinc-600">
-              <Trophy className="w-3.5 h-3.5 text-zinc-300" />
-              <span>Chosen Response: {chosenModel.name}</span>
+            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border ${
+              isSynthesized
+                ? 'bg-zinc-100 text-zinc-950 border-white'
+                : 'bg-zinc-700 text-zinc-100 border-zinc-600'
+            }`}>
+              {isSynthesized ? (
+                <Sparkles className="w-3.5 h-3.5 text-zinc-950" />
+              ) : (
+                <Trophy className="w-3.5 h-3.5 text-zinc-300" />
+              )}
+              <span>{isSynthesized ? 'Master Synthesis' : `Chosen: ${chosenModel.name}`}</span>
             </div>
             <span className="text-[11px] text-zinc-400">({chosenModel.provider})</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
+            <span className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
+              <Zap className="w-3 h-3 text-zinc-400" />
               {chosenModelData.latency || '...'}
             </span>
             <button
@@ -96,7 +117,7 @@ export default function SelectedMessage({
           >
             <Layers className="w-3.5 h-3.5 text-zinc-400" />
             <span>
-              {showAlternatives ? 'Hide' : 'Inspect'} other 2 model answers
+              {showAlternatives ? 'Hide' : 'Inspect'} {isSynthesized ? 'original 3 model answers' : 'other 2 model answers'}
             </span>
             {showAlternatives ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
@@ -107,14 +128,14 @@ export default function SelectedMessage({
           <div className="border-t border-zinc-800 bg-zinc-950/70 p-4 sm:p-5 space-y-3">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-mono uppercase tracking-wider text-zinc-400">
-                Alternative Responses (Unselected)
+                {isSynthesized ? 'Source Models (Synthesized Ingredients)' : 'Alternative Responses (Unselected)'}
               </h4>
               <span className="text-[11px] text-zinc-500">
                 Switch winner anytime
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className={`grid grid-cols-1 ${isSynthesized ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-3`}>
               {alternativeModels.map(altModel => {
                 const altData = message.models?.[altModel.id] || {};
                 return (
