@@ -34,7 +34,7 @@ export default function MarkdownRenderer({ content }) {
   }
 
   return (
-    <div className="space-y-3 leading-relaxed text-[14.5px] text-slate-200">
+    <div className="space-y-3 leading-relaxed text-[14px] text-zinc-200">
       {parts.map((part, idx) => {
         if (part.type === 'code') {
           return <CodeBlock key={idx} language={part.language} code={part.value} />;
@@ -55,20 +55,20 @@ function CodeBlock({ language, code }) {
   };
 
   return (
-    <div className="my-3 rounded-xl overflow-hidden border border-slate-700/60 bg-[#090b10] shadow-md font-mono text-[13px]">
-      <div className="flex items-center justify-between px-3.5 py-1.5 bg-slate-900/90 border-b border-slate-800 text-xs text-slate-400">
+    <div className="my-3 rounded-xl overflow-hidden border border-zinc-800 bg-[#09090b] font-mono text-[13px]">
+      <div className="flex items-center justify-between px-3.5 py-1.5 bg-zinc-900/90 border-b border-zinc-800 text-xs text-zinc-400">
         <div className="flex items-center gap-1.5">
-          <Terminal className="w-3.5 h-3.5 text-indigo-400" />
-          <span className="font-semibold text-slate-300">{language}</span>
+          <Terminal className="w-3.5 h-3.5 text-zinc-400" />
+          <span className="font-medium text-zinc-300">{language}</span>
         </div>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 px-2 py-0.5 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors text-xs cursor-pointer"
+          className="flex items-center gap-1 px-2 py-0.5 rounded hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors text-xs cursor-pointer"
         >
           {copied ? (
             <>
-              <Check className="w-3 h-3 text-emerald-400" />
-              <span className="text-emerald-400">Copied</span>
+              <Check className="w-3 h-3 text-zinc-200" />
+              <span className="text-zinc-200">Copied</span>
             </>
           ) : (
             <>
@@ -78,7 +78,7 @@ function CodeBlock({ language, code }) {
           )}
         </button>
       </div>
-      <div className="p-3.5 overflow-x-auto text-emerald-300/90">
+      <div className="p-3.5 overflow-x-auto text-zinc-300">
         <pre className="whitespace-pre">{code.trim()}</pre>
       </div>
     </div>
@@ -99,7 +99,7 @@ function FormattedText({ text }) {
         // Heading 3
         if (line.startsWith('### ')) {
           return (
-            <h3 key={i} className="text-base font-bold text-slate-100 mt-3 mb-1">
+            <h3 key={i} className="text-sm sm:text-base font-semibold text-zinc-100 mt-3 mb-1">
               {formatInline(line.replace('### ', ''))}
             </h3>
           );
@@ -107,7 +107,7 @@ function FormattedText({ text }) {
         // Heading 2
         if (line.startsWith('## ')) {
           return (
-            <h2 key={i} className="text-lg font-bold text-white mt-4 mb-1 border-b border-slate-800 pb-1">
+            <h2 key={i} className="text-base sm:text-lg font-semibold text-zinc-100 mt-4 mb-1 border-b border-zinc-800/80 pb-1">
               {formatInline(line.replace('## ', ''))}
             </h2>
           );
@@ -115,7 +115,7 @@ function FormattedText({ text }) {
         // Heading 1
         if (line.startsWith('# ')) {
           return (
-            <h1 key={i} className="text-xl font-extrabold text-white mt-4 mb-2">
+            <h1 key={i} className="text-lg sm:text-xl font-bold text-zinc-100 mt-4 mb-2">
               {formatInline(line.replace('# ', ''))}
             </h1>
           );
@@ -123,7 +123,7 @@ function FormattedText({ text }) {
         // Heading 4
         if (line.startsWith('#### ')) {
           return (
-            <h4 key={i} className="text-sm font-semibold text-indigo-300 mt-2 mb-1">
+            <h4 key={i} className="text-xs sm:text-sm font-semibold text-zinc-300 mt-2 mb-1">
               {formatInline(line.replace('#### ', ''))}
             </h4>
           );
@@ -132,7 +132,7 @@ function FormattedText({ text }) {
         // Blockquote
         if (line.startsWith('> ')) {
           return (
-            <blockquote key={i} className="border-l-2 border-indigo-500 pl-3 py-1 my-1.5 bg-indigo-500/5 text-slate-300 italic text-sm rounded-r">
+            <blockquote key={i} className="border-l-2 border-zinc-600 pl-3 py-1 my-1.5 bg-zinc-900/40 text-zinc-300 italic text-sm rounded-r">
               {formatInline(line.replace('> ', ''))}
             </blockquote>
           );
@@ -142,8 +142,8 @@ function FormattedText({ text }) {
         if (line.startsWith('- ') || line.startsWith('* ')) {
           return (
             <div key={i} className="flex items-start gap-2 ml-2 my-0.5">
-              <span className="text-indigo-400 font-bold leading-5">•</span>
-              <span className="text-slate-200">{formatInline(line.replace(/^[-*]\s+/, ''))}</span>
+              <span className="text-zinc-500 font-bold leading-5">•</span>
+              <span className="text-zinc-300">{formatInline(line.replace(/^[-*]\s+/, ''))}</span>
             </div>
           );
         }
@@ -153,10 +153,10 @@ function FormattedText({ text }) {
         if (numMatch) {
           return (
             <div key={i} className="flex items-start gap-2 ml-2 my-0.5">
-              <span className="text-indigo-400 font-semibold leading-5 text-xs bg-indigo-500/10 px-1.5 py-0.5 rounded">
+              <span className="text-zinc-400 font-mono text-xs bg-zinc-800/80 border border-zinc-700/60 px-1.5 py-0.5 rounded">
                 {numMatch[1]}
               </span>
-              <span className="text-slate-200">{formatInline(numMatch[2])}</span>
+              <span className="text-zinc-300">{formatInline(numMatch[2])}</span>
             </div>
           );
         }
@@ -168,9 +168,9 @@ function FormattedText({ text }) {
             return null; // separator row
           }
           return (
-            <div key={i} className="grid grid-cols-3 gap-2 p-2 bg-slate-900/60 rounded border border-slate-800 text-xs">
+            <div key={i} className="grid grid-cols-3 gap-2 p-2 bg-zinc-900/60 rounded-lg border border-zinc-800 text-xs text-zinc-300">
               {cells.map((cell, cIdx) => (
-                <div key={cIdx} className="font-medium text-slate-300">
+                <div key={cIdx} className="font-medium">
                   {formatInline(cell)}
                 </div>
               ))}
@@ -179,7 +179,7 @@ function FormattedText({ text }) {
         }
 
         return (
-          <p key={i} className="text-slate-300 leading-relaxed">
+          <p key={i} className="text-zinc-300 leading-relaxed">
             {formatInline(line)}
           </p>
         );
@@ -192,7 +192,6 @@ function FormattedText({ text }) {
 function formatInline(str) {
   if (!str) return '';
 
-  // Regex to split bold and inline code
   const tokens = [];
   const inlineRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
   let lastIndex = 0;
@@ -219,19 +218,18 @@ function formatInline(str) {
 
   return tokens.map((token, i) => {
     if (token.type === 'bold') {
-      return <strong key={i} className="font-semibold text-white">{token.text}</strong>;
+      return <strong key={i} className="font-semibold text-zinc-100">{token.text}</strong>;
     }
     if (token.type === 'inline-code') {
       return (
-        <code key={i} className="px-1.5 py-0.5 mx-0.5 rounded-md bg-slate-800 border border-slate-700/80 text-amber-300 text-xs font-mono">
+        <code key={i} className="px-1.5 py-0.5 mx-0.5 rounded bg-zinc-800 border border-zinc-700/60 text-zinc-200 text-xs font-mono">
           {token.text}
         </code>
       );
     }
     if (token.type === 'italic') {
-      return <em key={i} className="italic text-slate-300">{token.text}</em>;
+      return <em key={i} className="italic text-zinc-300">{token.text}</em>;
     }
     return <span key={i}>{token.text}</span>;
   });
 }
-

@@ -1,27 +1,5 @@
 import mongoose from 'mongoose';
-
-const ModelResponseSchema = new mongoose.Schema({
-  modelId: { type: String, required: true },
-  modelName: { type: String, required: true },
-  content: { type: String, default: '' },
-  latency: { type: String, default: '...' },
-  tokens: { type: Number, default: 0 },
-  loading: { type: Boolean, default: false },
-  error: { type: String, default: null }
-}, { _id: false });
-
-const MessageSchema = new mongoose.Schema({
-  id: { type: String, required: true },
-  sender: { type: String, enum: ['user', 'assistant'], required: true },
-  text: { type: String }, // For user messages
-  timestamp: { type: String, default: () => new Date().toISOString() },
-  selectedModelId: { type: String, default: null }, // Winner model chosen by user
-  models: {
-    type: Map,
-    of: ModelResponseSchema,
-    default: {}
-  }
-}, { _id: false });
+import { MessageSchema } from './Message.js';
 
 const ConversationSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true, index: true },
@@ -49,4 +27,3 @@ const ConversationSchema = new mongoose.Schema({
 });
 
 export const Conversation = mongoose.model('Conversation', ConversationSchema);
-

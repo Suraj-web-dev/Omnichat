@@ -2,10 +2,10 @@ import confetti from 'canvas-confetti';
 
 export function fireConfetti() {
   confetti({
-    particleCount: 50,
-    spread: 60,
+    particleCount: 40,
+    spread: 55,
     origin: { y: 0.8 },
-    colors: ['#6366f1', '#10b981', '#f59e0b', '#3b82f6', '#ec4899']
+    colors: ['#ffffff', '#e4e4e7', '#d4d4d8', '#a1a1aa', '#71717a']
   });
 }
 
@@ -29,10 +29,3 @@ export function formatTime(timestamp) {
 export function generateId() {
   return 'id_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
 }
-
-// Simple markdown renderer for code blocks, bold, lists, quotes, inline code
-export function renderMarkdown(content) {
-  if (!content) return '';
-  return content;
-}
-

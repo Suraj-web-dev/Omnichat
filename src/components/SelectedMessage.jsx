@@ -6,7 +6,7 @@ import {
   Copy,
   Check,
   RefreshCw,
-  Zap
+  Layers
 } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 import { AVAILABLE_MODELS } from '../data/dummyData';
@@ -24,8 +24,7 @@ export default function SelectedMessage({
   const chosenModel = AVAILABLE_MODELS.find(m => m.id === chosenModelId) || {
     id: chosenModelId,
     name: 'AI Model',
-    provider: 'AI Provider',
-    badgeColor: 'border-indigo-500/30 text-indigo-400 bg-indigo-500/10'
+    provider: 'AI Provider'
   };
 
   const chosenModelData = message.models?.[chosenModelId] || {};
@@ -40,113 +39,110 @@ export default function SelectedMessage({
 
   return (
     <div className="my-6 px-2 sm:px-4">
-      <div className="max-w-4xl rounded-2xl bg-[#121622]/90 border border-slate-800/90 shadow-xl overflow-hidden">
+      <div className="max-w-4xl rounded-2xl bg-zinc-900/80 border border-zinc-700/80 shadow-sm overflow-hidden">
         {/* Selected Model Top Ribbon */}
-        <div className="px-4 py-2.5 bg-slate-900/80 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+        <div className="px-4 py-2.5 bg-zinc-800/80 border-b border-zinc-700/70 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-zinc-700 text-zinc-100 border border-zinc-600">
+              <Trophy className="w-3.5 h-3.5 text-zinc-300" />
               <span>Chosen Response: {chosenModel.name}</span>
             </div>
-            <span className="text-[11px] text-slate-400">({chosenModel.provider})</span>
+            <span className="text-[11px] text-zinc-400">({chosenModel.provider})</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono text-slate-400 bg-slate-950/60 px-2 py-0.5 rounded border border-slate-800/60">
-              {chosenModelData.latency || '1.1s'}
+            <span className="text-[11px] font-mono text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
+              {chosenModelData.latency || '...'}
             </span>
             <button
               onClick={() => onReopenComparison(message.id)}
-              className="flex items-center gap-1 px-2.5 py-1 text-xs text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-lg transition-colors cursor-pointer border border-indigo-500/20"
-              title="Compare all 3 responses again"
+              className="flex items-center gap-1 px-2.5 py-1 text-xs text-zinc-300 hover:text-white hover:bg-zinc-700/60 rounded-md transition-colors cursor-pointer border border-zinc-700"
+              title="Compare all 3 models again"
             >
-              <RefreshCw className="w-3 h-3" />
-              <span>Re-compare 3 Models</span>
+              <RefreshCw className="w-3 h-3 text-zinc-400" />
+              <span>Re-compare</span>
             </button>
           </div>
         </div>
 
-        {/* Response Content */}
+        {/* Content */}
         <div className="p-4 sm:p-5">
           <MarkdownRenderer content={chosenModelData.content} />
         </div>
 
-        {/* Footer Actions */}
-        <div className="px-4 py-3 bg-slate-900/40 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+        {/* Footer */}
+        <div className="px-4 py-2.5 bg-zinc-900/50 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-2 text-xs text-zinc-400">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-800 hover:text-slate-200 transition-colors cursor-pointer text-slate-300"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-zinc-800 hover:text-zinc-200 transition-colors cursor-pointer"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400 font-medium">Copied</span>
+                <Check className="w-3.5 h-3.5 text-zinc-200" />
+                <span className="text-zinc-200">Copied</span>
               </>
             ) : (
               <>
                 <Copy className="w-3.5 h-3.5" />
-                <span>Copy</span>
+                <span>Copy response</span>
               </>
             )}
           </button>
 
-          {/* Toggle Accordion for Other 2 Models */}
+          {/* Alternatives toggle */}
           <button
             onClick={() => setShowAlternatives(!showAlternatives)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer font-medium"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-all cursor-pointer font-medium"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-400" />
+            <Layers className="w-3.5 h-3.5 text-zinc-400" />
             <span>
-              {showAlternatives ? 'Hide' : 'Inspect'} 2 other model alternatives
+              {showAlternatives ? 'Hide' : 'Inspect'} other 2 model answers
             </span>
-            {showAlternatives ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {showAlternatives ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
         </div>
 
-        {/* Expandable Alternatives Accordion */}
+        {/* Expandable Alternatives */}
         {showAlternatives && (
-          <div className="border-t border-slate-800 bg-slate-950/70 p-4 sm:p-5 space-y-4">
+          <div className="border-t border-zinc-800 bg-zinc-950/70 p-4 sm:p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                Alternative Model Outputs (Unselected)
+              <h4 className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+                Alternative Responses (Unselected)
               </h4>
-              <span className="text-[11px] text-slate-500">
-                You can switch your winner at any time
+              <span className="text-[11px] text-zinc-500">
+                Switch winner anytime
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {alternativeModels.map(altModel => {
                 const altData = message.models?.[altModel.id] || {};
                 return (
                   <div
                     key={altModel.id}
-                    className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between"
+                    className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 flex flex-col justify-between"
                   >
                     <div>
-                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800">
                         <div className="flex items-center gap-2">
-                          <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold ${altModel.avatarBg}`}>
-                            {altModel.name.charAt(0)}
-                          </div>
-                          <span className="font-semibold text-xs text-white">{altModel.name}</span>
-                          <span className="text-[10px] text-slate-400">({altModel.provider})</span>
+                          <span className="font-semibold text-xs text-zinc-200">{altModel.name}</span>
+                          <span className="text-[10px] text-zinc-400">({altModel.provider})</span>
                         </div>
-                        <span className="text-[10px] font-mono text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded">
-                          {altData.latency || '1.2s'}
+                        <span className="text-[10px] font-mono text-zinc-400 bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800">
+                          {altData.latency || '...'}
                         </span>
                       </div>
 
-                      <div className="text-xs text-slate-300 max-h-48 overflow-y-auto mb-3">
+                      <div className="text-xs text-zinc-300 max-h-48 overflow-y-auto mb-3">
                         <MarkdownRenderer content={altData.content} />
                       </div>
                     </div>
 
                     <button
                       onClick={() => onSelectDifferentModel(message.id, altModel.id)}
-                      className="w-full mt-2 py-1.5 px-3 bg-slate-800 hover:bg-indigo-600 hover:text-white text-slate-300 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full mt-2 py-1.5 px-3 bg-zinc-800 hover:bg-zinc-700 hover:text-white text-zinc-300 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer border border-zinc-700"
                     >
-                      <Trophy className="w-3 h-3 text-amber-400" />
+                      <Trophy className="w-3 h-3 text-zinc-400" />
                       <span>Switch Winner to {altModel.name}</span>
                     </button>
                   </div>

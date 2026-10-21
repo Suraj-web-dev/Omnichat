@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Sparkles, Columns3, Rows3 } from 'lucide-react';
+import { Menu, Columns3, Rows3 } from 'lucide-react';
 import { AVAILABLE_MODELS } from '../data/dummyData';
 
 export default function ChatHeader({
@@ -12,76 +12,70 @@ export default function ChatHeader({
   const messageCount = activeConversation?.messages?.length || 0;
 
   return (
-    <header className="h-16 border-b border-slate-800/80 bg-[#0d1017]/90 backdrop-blur-md px-4 flex items-center justify-between shrink-0 z-20">
+    <header className="h-14 border-b border-zinc-800/80 bg-[#09090b]/95 backdrop-blur-md px-4 flex items-center justify-between shrink-0 z-20">
       {/* Left: Mobile menu toggle + Chat Title */}
       <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onToggleSidebar}
-          className="md:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
-          title="Open sidebar"
+          className="md:hidden p-1.5 text-zinc-400 hover:text-white rounded-md hover:bg-zinc-800 transition-colors cursor-pointer"
+          title="Toggle sidebar"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-4 h-4" />
         </button>
 
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm sm:text-base font-semibold text-white truncate max-w-xs sm:max-w-md">
-              {activeConversation?.title || 'New Multi-Model Session'}
+            <h2 className="text-sm font-semibold text-zinc-100 truncate max-w-xs sm:max-w-md">
+              {activeConversation?.title || 'New Conversation'}
             </h2>
-            <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full">
-              <Sparkles className="w-3 h-3" />
-              3 Models Arena
+            <span className="hidden sm:inline-flex items-center px-1.5 py-0.2 text-[10px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 rounded">
+              3 Models
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 hidden sm:block">
-            {messageCount > 0 ? `${messageCount} message turns • Select preferred model to advance` : 'Type a prompt to compare 3 models'}
+          <p className="text-[11px] text-zinc-400 hidden sm:block">
+            {messageCount > 0 ? `${messageCount} turns • Choose preferred model to advance` : 'Type a prompt to compare 3 models simultaneously'}
           </p>
         </div>
       </div>
 
-      {/* Right: Layout Switcher & Model Pill Indicators */}
+      {/* Right: Status & Layout Switcher */}
       <div className="flex items-center gap-2">
         {/* Backend / DB Status Pill */}
         <div
-          title={backendStatus?.online ? "Express & MongoDB Backend Active" : "Local Mode Active"}
-          className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium border ${
-            backendStatus?.online
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-              : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-          }`}
+          className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono border border-zinc-800 bg-zinc-900/60 text-zinc-400"
         >
-          <span className={`w-2 h-2 rounded-full ${backendStatus?.online ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
-          <span>{backendStatus?.online ? 'Backend: Connected' : 'Local Mode'}</span>
+          <span className={`w-1.5 h-1.5 rounded-full ${backendStatus?.online ? 'bg-zinc-300' : 'bg-zinc-500'}`}></span>
+          <span>{backendStatus?.online ? 'Backend Connected' : 'Local Mode'}</span>
         </div>
 
         {/* Model Pills (Desktop) */}
-        <div className="hidden lg:flex items-center gap-1.5 bg-slate-900/90 border border-slate-800 p-1 rounded-xl">
+        <div className="hidden lg:flex items-center gap-1 bg-zinc-900 border border-zinc-800 p-0.5 rounded-lg">
           {AVAILABLE_MODELS.map(m => (
             <div
               key={m.id}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs border ${m.badgeColor}`}
+              className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] text-zinc-300 font-medium"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
-              <span className="font-semibold">{m.name}</span>
+              <span className="w-1 h-1 rounded-full bg-zinc-500"></span>
+              <span>{m.name}</span>
             </div>
           ))}
         </div>
 
         {/* Layout Mode Selector (Grid vs Stacked) */}
-        <div className="flex items-center bg-slate-900 border border-slate-800 p-0.5 rounded-lg text-slate-400">
+        <div className="flex items-center bg-zinc-900 border border-zinc-800 p-0.5 rounded-lg text-zinc-400">
           <button
             onClick={() => onChangeLayout('grid')}
             title="3-Column Grid View"
-            className={`p-1.5 rounded-md transition-colors cursor-pointer ${layoutMode === 'grid' ? 'bg-indigo-600 text-white shadow-xs' : 'hover:text-slate-200'}`}
+            className={`p-1.5 rounded-md transition-colors cursor-pointer ${layoutMode === 'grid' ? 'bg-zinc-700 text-white' : 'hover:text-zinc-200'}`}
           >
-            <Columns3 className="w-4 h-4" />
+            <Columns3 className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => onChangeLayout('stacked')}
             title="Stacked Tabs View"
-            className={`p-1.5 rounded-md transition-colors cursor-pointer ${layoutMode === 'stacked' ? 'bg-indigo-600 text-white shadow-xs' : 'hover:text-slate-200'}`}
+            className={`p-1.5 rounded-md transition-colors cursor-pointer ${layoutMode === 'stacked' ? 'bg-zinc-700 text-white' : 'hover:text-zinc-200'}`}
           >
-            <Rows3 className="w-4 h-4" />
+            <Rows3 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

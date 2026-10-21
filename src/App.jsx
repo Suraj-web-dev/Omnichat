@@ -36,7 +36,7 @@ export default function App() {
   }, [messages, isGenerating]);
 
   return (
-    <div className="flex h-screen w-screen bg-[#0b0e14] text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen w-screen bg-[#09090b] text-zinc-100 overflow-hidden font-sans">
       {/* Left Sidebar */}
       <Sidebar
         conversations={conversations}
@@ -50,7 +50,7 @@ export default function App() {
       />
 
       {/* Main Chat Workspace */}
-      <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-gradient-to-b from-[#0f131d] to-[#0a0d14]">
+      <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-[#09090b]">
         {/* Header */}
         <ChatHeader
           activeConversation={activeConversation}
@@ -99,11 +99,10 @@ export default function App() {
         </div>
 
         {/* Bottom Input Area */}
-        <div className="shrink-0 bg-gradient-to-t from-[#0b0e14] via-[#0b0e14]/90 to-transparent pt-2">
+        <div className="shrink-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/90 to-transparent pt-2">
           <ChatInput
             onSendMessage={sendMessage}
             isGenerating={isGenerating}
-            showQuickPrompts={messages.length === 0}
           />
         </div>
       </div>

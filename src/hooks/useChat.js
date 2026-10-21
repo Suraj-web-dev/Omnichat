@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { INITIAL_CONVERSATIONS, generateDynamicModelResponses } from '../data/dummyData';
+import { useState, useEffect } from 'react';
+import { AVAILABLE_MODELS, INITIAL_CONVERSATIONS, generateDynamicModelResponses } from '../data/dummyData';
 import { generateId, fireConfetti } from '../utils/helpers';
 import * as api from '../services/api';
 
@@ -140,17 +140,25 @@ export function useChat() {
       timestamp: new Date().toISOString()
     };
 
-    // Pending placeholder for 3 models with loading state
+    // Pending placeholder for 3 models with loading state dynamically created from AVAILABLE_MODELS
+    const pendingModels = {};
+    AVAILABLE_MODELS.forEach(m => {
+      pendingModels[m.id] = {
+        modelId: m.id,
+        modelName: m.name,
+        content: '',
+        latency: '...',
+        tokens: 0,
+        loading: true
+      };
+    });
+
     const pendingAiMessage = {
       id: aiMessageId,
       sender: 'assistant',
       timestamp: new Date().toISOString(),
       selectedModelId: null,
-      models: {
-        'gpt-4o': { modelId: 'gpt-4o', modelName: 'GPT-4o', content: '', latency: '...', tokens: 0, loading: true },
-        'claude-3-5-sonnet': { modelId: 'claude-3-5-sonnet', modelName: 'Claude 3.5 Sonnet', content: '', latency: '...', tokens: 0, loading: true },
-        'gemini-1-5-pro': { modelId: 'gemini-1-5-pro', modelName: 'Gemini 1.5 Pro', content: '', latency: '...', tokens: 0, loading: true }
-      }
+      models: pendingModels
     };
 
     // Optimistically update conversation
@@ -176,7 +184,6 @@ export function useChat() {
 
     if (backendStatus.online) {
       try {
-        // Send to Express Backend
         const result = await api.sendMessageTo3Models(targetChatId, promptText.trim());
         if (result && result.aiMessage) {
           setConversations(prev =>
@@ -193,13 +200,12 @@ export function useChat() {
           );
         }
       } catch (backendError) {
-        console.warn('Backend generation failed, falling back to client-side generator:', backendError);
+        console.warn('Backend generation failed, falling back to simulated generator:', backendError);
         runClientFallbackGenerator(targetChatId, aiMessageId, promptText);
       } finally {
         setIsGenerating(false);
       }
     } else {
-      // Client-side simulated generation
       runClientFallbackGenerator(targetChatId, aiMessageId, promptText);
     }
   };
@@ -304,13 +310,6 @@ export function useChat() {
     }
   };
 
-  // Reset to default sample dummy data
-  const resetToSampleData = () => {
-    setConversations(INITIAL_CONVERSATIONS);
-    setActiveChatId(INITIAL_CONVERSATIONS[0].id);
-    localStorage.removeItem(STORAGE_KEY);
-  };
-
   return {
     conversations,
     activeChatId,
@@ -323,7 +322,6 @@ export function useChat() {
     renameChat,
     sendMessage,
     selectModelResponse,
-    unselectModelResponse,
-    resetToSampleData
+    unselectModelResponse
   };
 }
