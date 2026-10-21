@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OmniChat System Architecture & Technical Documentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #18181b;
+      background: #ffffff;
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    .cover-banner {
+      background: #09090b;
+      color: #ffffff;
+      padding: 36px 30px;
+      border-radius: 12px;
+      margin-bottom: 28px;
+    }
+
+    .cover-tag {
+      display: inline-block;
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      background: #27272a;
+      color: #a1a1aa;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border: 1px solid #3f3f46;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #a1a1aa;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #27272a;
+    }
+
+    .meta-item {
+      font-size: 11px;
+    }
+
+    .meta-label {
+      color: #71717a;
+      text-transform: uppercase;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-val {
+      color: #f4f4f5;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #09090b;
+      margin: 28px 0 12px 0;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e4e4e7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #18181b;
+      margin: 16px 0 8px 0;
+    }
+
+    p {
+      color: #3f3f46;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #f4f4f5;
+      color: #18181b;
+      border: 1px solid #e4e4e7;
+    }
+
+    .badge-primary {
+      background: #09090b;
+      color: #ffffff;
+      border: 1px solid #27272a;
+    }
+
+    /* Cards */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .card {
+      background: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #09090b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      font-size: 10.5px;
+      color: #71717a;
+      margin-bottom: 6px;
+    }
+
+    .card-body {
+      font-size: 11px;
+      color: #3f3f46;
+      line-height: 1.45;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 11.5px;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    th {
+      background: #f4f4f5;
+      font-weight: 600;
+      color: #09090b;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-top: 1px solid #e4e4e7;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafafa;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      background: #f4f4f5;
+      border: 1px solid #e4e4e7;
+      padding: 1px 4px;
+      border-radius: 4px;
+      color: #09090b;
+    }
+
+    /* Flowchart / Box Container */
+    .flow-container {
+      background: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+
+    .flow-step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .flow-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .flow-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #09090b;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .flow-content h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #09090b;
+      margin-bottom: 2px;
+    }
+
+    .flow-content p {
+      font-size: 11px;
+      color: #52525b;
+      margin-bottom: 0;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .highlight-box {
+      background: #f4f4f5;
+      border-left: 3px solid #09090b;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin: 12px 0;
+      font-size: 11.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cover Banner -->
+  <div class="cover-banner">
+    <span class="cover-tag">Production Technical Architecture</span>
+    <h1>OmniChat (Snitch) System Documentation</h1>
+    <div class="subtitle">
+      A Multi-Model Comparison & AI Consensus Engine executing Groq, Cohere, and Google Gemini concurrently with real-time benchmarking and automated synthesis.
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Architecture</div>
+        <div class="meta-val">MVC + React 19 SPA</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Database</div>
+        <div class="meta-val">MongoDB Live + In-Memory</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">AI Providers</div>
+        <div class="meta-val">Groq, Cohere, Gemini</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Repository</div>
+        <div class="meta-val">github.com/Suraj-web-dev/Omnichat</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <h2>1. Executive Summary & Tech Stack</h2>
+  <p>
+    <strong>OmniChat</strong> is an advanced, high-performance conversational AI platform designed to overcome the single-model limitation of conventional AI chat applications like ChatGPT. Rather than locking the user into a single LLM perspective, OmniChat dispatches prompts concurrently across 3 frontier AI models on 100% free API tiers, calculates latency and token throughput in real time, and features a proprietary <strong>Master Synthesis Engine</strong> to combine unanimous consensus, superior code snippets, and critical edge cases into one authoritative answer.
+  </p>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">
+        <span>Frontend Layer</span>
+        <span class="badge badge-primary">Client</span>
+      </div>
+      <div class="card-sub">React 19 + Vite 8 + Tailwind v4</div>
+      <div class="card-body">
+        Declarative functional UI with custom hooks, optimistic rendering, zero-lag sidebar animation, and strict monochrome zinc design palette.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Backend Layer</span>
+        <span class="badge">Express 5</span>
+      </div>
+      <div class="card-sub">Node.js ESM + REST API</div>
+      <div class="card-body">
+        Clean MVC separation with modular routers, controllers, and resilient Mongoose schema supporting live database persistence and automatic in-memory fallback.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>AI Intelligence</span>
+        <span class="badge">Multi-LLM</span>
+      </div>
+      <div class="card-sub">3x Free Providers + Meta-Engine</div>
+      <div class="card-body">
+        Groq Qwen 3.8 (&lt;0.4s), Cohere Command R (0.8s), and Google Gemini Flash with timeout safeguards and automated Master Synthesis.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <h2>2. Complete End-to-End Data & Code Flow</h2>
+  <p>
+    The lifecycle of every user prompt traces through a decoupled, asynchronous path designed for fault tolerance and sub-second feedback:
+  </p>
+
+  <div class="flow-container">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>User Interaction in ChatInput.jsx</h4>
+        <p>User enters inquiry. Keyboard listeners detect <code>Enter</code> (submit) vs <code>Shift+Enter</code> (newline). Triggers <code>sendMessage(prompt)</code> in <code>useChat.js</code>.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Optimistic Client State & Loading Skeleton</h4>
+        <p>A unique UUID is generated. Placeholder model cards with animated skeleton loaders immediately render on screen in <code>MultiModelResponse.jsx</code> so UI never feels stalled.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>HTTP POST Dispatch to Express Backend</h4>
+        <p><code>src/services/api.js</code> calls <code>POST /api/conversations/:id/messages</code>. <code>messageRoutes.js</code> passes execution to <code>messageController.js</code>.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>Parallel Multi-Model Dispatch with 9s Safeguard</h4>
+        <p><code>server/services/aiService.js</code> calls <code>Promise.allSettled([Groq, Cohere, Gemini])</code> wrapped inside <code>withTimeout(..., 9000)</code>. Fast models resolve in 300-800ms; slow models cleanly fall back without blocking.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">5</div>
+      <div class="flow-content">
+        <h4>MongoDB Persistence & Client Render</h4>
+        <p>Responses, latency metrics, and token counts are saved in MongoDB. The frontend replaces loading cards with live model content, syntax-highlighted code, and <code>⚡ Latency HUD</code>.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">6</div>
+      <div class="flow-content">
+        <h4>Selection or AI Master Consensus (Unique Feature)</h4>
+        <p><strong>Option A:</strong> User clicks <em>"Choose this Answer"</em> to lock in an individual model.<br>
+        <strong>Option B:</strong> User clicks <em>"✨ Synthesize Master Answer"</em>. Backend runs meta-prompting to combine unanimous consensus, optimal code patterns, and security caveats into one unified response.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Section 3 -->
+  <h2>3. Backend File Breakdown & Responsibilities</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">File Path</th>
+        <th style="width: 20%;">Core Architecture</th>
+        <th>Key Functions & Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>server/index.js</code></td>
+        <td>Server Entrypoint</td>
+        <td>Configures CORS, JSON body-parser, <code>/api/health</code> endpoint, mounts routes, starts Express server on port 5000, and triggers MongoDB connection.</td>
+      </tr>
+      <tr>
+        <td><code>server/config/db.js</code></td>
+        <td>Database Connector</td>
+        <td><code>connectDB()</code> connects to MongoDB. Employs a 2000ms connection timeout; if MongoDB is not running locally, seamlessly switches to In-Memory mode without crashing.</td>
+      </tr>
+      <tr>
+        <td><code>server/models/Conversation.js</code></td>
+        <td>Mongoose Schema</td>
+        <td>Defines conversation document structure (<code>id</code>, <code>title</code>, <code>messages</code> array, timestamps). Transforms internal Mongoose Map objects into clean JSON.</td>
+      </tr>
+      <tr>
+        <td><code>server/models/Message.js</code></td>
+        <td>Mongoose Schema</td>
+        <td>Defines message subdocument (<code>sender</code>, <code>text</code>, <code>selectedModelId</code>, and <code>models</code> Map storing Groq, Cohere, Gemini, and Synthesized responses).</td>
+      </tr>
+      <tr>
+        <td><code>server/routes/conversationRoutes.js</code></td>
+        <td>Router Module</td>
+        <td>Maps REST endpoints for conversation management: <code>GET /</code>, <code>POST /</code>, <code>GET /:id</code>, <code>PATCH /:id</code>, <code>DELETE /:id</code>.</td>
+      </tr>
+      <tr>
+        <td><code>server/routes/messageRoutes.js</code></td>
+        <td>Router Module</td>
+        <td>Maps REST endpoints for messages: <code>POST /:id/messages</code> (send prompt), <code>PATCH /:id/messages/:msgId/select</code> (select winner), <code>POST /:id/messages/:msgId/synthesize</code> (master consensus).</td>
+      </tr>
+      <tr>
+        <td><code>server/controllers/conversationController.js</code></td>
+        <td>Business Controller</td>
+        <td>Handles conversation CRUD: <code>getConversations</code>, <code>createConversation</code>, <code>renameConversation</code>, <code>deleteConversation</code> across both MongoDB and In-Memory storage.</td>
+      </tr>
+      <tr>
+        <td><code>server/controllers/messageController.js</code></td>
+        <td>Business Controller</td>
+        <td>• <code>sendMessageAndGenerate3Models</code>: Orchestrates parallel AI generation.<br>
+        • <code>selectWinningModel</code>: Updates chosen model ID in DB.<br>
+        • <code>synthesizeAndSelectWinner</code>: Gathers 3 model answers, executes synthesis, saves result as winner.</td>
+      </tr>
+      <tr>
+        <td><code>server/services/aiService.js</code></td>
+        <td>AI Gateway & Engine</td>
+        <td>• <code>generate3ModelResponses</code>: Parallel dispatch for Groq, Cohere, and Gemini.<br>
+        • <code>withTimeout</code>: 9-second safety race condition wrapper.<br>
+        • <code>synthesizeModelResponses</code>: Meta-synthesis engine merging insights into Master Answer.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Section 4 -->
+  <h2>4. Frontend File & Component Breakdown</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Component / File</th>
+        <th style="width: 20%;">Type</th>
+        <th>Responsibilities & State Handled</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>src/App.jsx</code></td>
+        <td>Root Component</td>
+        <td>Initializes <code>useChat()</code>, manages <code>layoutMode</code> ('grid' | 'stacked') and <code>sidebarOpen</code> state. Houses master header, collapsible sidebar, and chat scroll area.</td>
+      </tr>
+      <tr>
+        <td><code>src/hooks/useChat.js</code></td>
+        <td>Custom Hook (Brain)</td>
+        <td>Central client state machine: manages conversation list, active session, loading indicators (<code>isGenerating</code>, <code>synthesizingMessageId</code>), backend API synchronization, and local storage fallback.</td>
+      </tr>
+      <tr>
+        <td><code>src/services/api.js</code></td>
+        <td>API Client</td>
+        <td>Clean wrapper over <code>fetch()</code>: <code>checkBackendHealth</code>, <code>fetchConversations</code>, <code>createConversation</code>, <code>sendMessageTo3Models</code>, <code>selectWinnerModel</code>, <code>synthesizeModelResponses</code>.</td>
+      </tr>
+      <tr>
+        <td><code>src/components/ChatHeader.jsx</code></td>
+        <td>UI Component</td>
+        <td>Minimalist top navigation bar. Contains chat title, sidebar open/close toggle (<code>PanelLeftClose</code> / <code>PanelLeftOpen</code>), and grid/stacked layout mode switch buttons.</td>
+      </tr>
+      <tr>
+        <td><code>src/components/Sidebar.jsx</code></td>
+        <td>UI Component</td>
+        <td>Collapsible session drawer with smooth animation, New Chat CTA, session search filter, inline chat rename & delete, and active model status indicators.</td>
+      </tr>
+      <tr>
+        <td><code>src/components/MultiModelResponse.jsx</code></td>
+        <td>Core Comparison UI</td>
+        <td>Renders 3 model response cards side-by-side or stacked, latency & token badges (<code>⚡ 0.3s</code>), "Choose this Answer" buttons, and the <strong>AI Consensus & Master Synthesis Banner</strong>.</td>
+      </tr>
+      <tr>
+        <td><code>src/components/SelectedMessage.jsx</code></td>
+        <td>Winner UI</td>
+        <td>Renders the locked-in winning response or Master Synthesis. Features an expandable drawer to inspect the other unselected model answers anytime.</td>
+      </tr>
+      <tr>
+        <td><code>src/components/MarkdownRenderer.jsx</code></td>
+        <td>Display Utility</td>
+        <td>Parses AI output into styled headings, bold text, bullet points, and code blocks with automatic syntax highlighting and 1-click clipboard copy.</td>
+      </tr>
+      <tr>
+        <td><code>src/components/ChatInput.jsx</code></td>
+        <td>Input Component</td>
+        <td>Auto-expanding textarea prompt bar with keyboard shortcuts (<code>Enter</code> to send, <code>Shift+Enter</code> for newline) and multi-model broadcast status.</td>
+      </tr>
+      <tr>
+        <td><code>src/utils/helpers.js</code></td>
+        <td>Utility Helpers</td>
+        <td><code>fireConfetti()</code> (metallic celebration particles), <code>copyToClipboard()</code>, <code>formatTime()</code>, and unique ID generator.</td>
+      </tr>
+      <tr>
+        <td><code>src/data/dummyData.js</code></td>
+        <td>Configuration Data</td>
+        <td>Defines <code>AVAILABLE_MODELS</code> metadata, <code>SYNTHESIS_MODEL_INFO</code>, suggested starter prompts (<code>QUICK_PROMPTS</code>), and offline simulated response generators.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- Section 5 -->
+  <h2>5. Key Innovations Absent in ChatGPT</h2>
+
+  <div class="highlight-box">
+    <strong>Why OmniChat Outperforms Single-Model Chatbots:</strong> Standard LLM chat applications force users into a single model's biases and failure points. OmniChat introduces multi-model consensus, cross-audit, and transparent hardware metrics.
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">
+        <span>Master AI Synthesis</span>
+        <span class="badge badge-primary">Proprietary</span>
+      </div>
+      <div class="card-body">
+        Combines Groq's high-speed code, Cohere's architectural explanations, and Gemini's security edge cases into one single, perfect master answer with one click.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Hardware Latency HUD</span>
+        <span class="badge">Real-Time</span>
+      </div>
+      <div class="card-body">
+        Live millisecond inference latency (e.g. <code>⚡ 0.3s</code>) and exact token counts displayed on every card, giving developers transparent speed comparisons.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Multi-Model Inspection</span>
+        <span class="badge">Interactive</span>
+      </div>
+      <div class="card-body">
+        Even after selecting a winner, users can toggle the inspection drawer to re-examine what other models suggested or swap winners retroactively.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <h2>6. Production Resilience & Stability Guardrails</h2>
+  <ul>
+    <li style="margin-bottom: 6px;"><strong>Non-Blocking 9-Second Timeouts:</strong> Each model in <code>aiService.js</code> is wrapped with <code>withTimeout()</code>. If one provider experiences cloud latency, other models still return in milliseconds.</li>
+    <li style="margin-bottom: 6px;"><strong>Groq OTPM Optimization:</strong> Groq free tier imposes a strict 1000 output tokens per minute ceiling. <code>max_tokens</code> is clamped at <code>850</code>, completely eliminating <code>429 rate_limit_exceeded</code> errors.</li>
+    <li style="margin-bottom: 6px;"><strong>Dual-Mode Storage Architecture:</strong> If MongoDB local service is inactive, the backend automatically falls back to an in-memory database and frontend local storage, guaranteeing 100% uptime for local development.</li>
+    <li style="margin-bottom: 6px;"><strong>Fastest Gemini Production Endpoint:</strong> Configured to use <code>gemini-flash-latest</code>, resolving Google AI Studio 503 high-demand spikes.</li>
+  </ul>
+
+  <!-- Section 7 -->
+  <h2>7. REST API Endpoints Specification</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">Method</th>
+        <th style="width: 35%;">Endpoint Path</th>
+        <th>Description & Payload</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/health</code></td>
+        <td>Returns server status, MongoDB connection status, and status of configured AI API keys.</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/conversations</code></td>
+        <td>Fetches all conversation sessions sorted by <code>updatedAt</code> descending.</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/conversations</code></td>
+        <td>Creates a new conversation session. Body: <code>{ title: "Session Name" }</code>.</td>
+      </tr>
+      <tr>
+        <td><code>PATCH</code></td>
+        <td><code>/api/conversations/:id</code></td>
+        <td>Renames a conversation. Body: <code>{ title: "New Title" }</code>.</td>
+      </tr>
+      <tr>
+        <td><code>DELETE</code></td>
+        <td><code>/api/conversations/:id</code></td>
+        <td>Permanently removes a conversation and its messages.</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/conversations/:id/messages</code></td>
+        <td>Broadcasts prompt to Groq, Cohere, and Gemini in parallel. Body: <code>{ prompt: "..." }</code>.</td>
+      </tr>
+      <tr>
+        <td><code>PATCH</code></td>
+        <td><code>/api/conversations/:id/messages/:messageId/select</code></td>
+        <td>Locks in chosen winner model ID. Body: <code>{ selectedModelId: "gpt-4o" }</code>.</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/conversations/:id/messages/:messageId/synthesize</code></td>
+        <td>Synthesizes all 3 model answers into a Master Answer and sets it as the chosen winner.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

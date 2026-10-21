@@ -157,3 +157,4 @@ GROQ_MODEL=qwen/qwen3.8-27b
 2. **Backend Server Down?** Frontend uses client-side simulated responses from `dummyData.js` so development never breaks.
 3. **An AI Provider Times Out?** Every model has an independent `withTimeout(..., 9000)` safeguard. If Gemini is slow, Groq and Cohere still render instantly and Gemini gracefully falls back.
 4. **Groq Free Token Limits?** `max_tokens` is configured at 850 (under the 1000 OTPM ceiling) to prevent 429 rate limit errors.
+
