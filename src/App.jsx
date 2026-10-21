@@ -14,7 +14,6 @@ export default function App() {
     activeChatId,
     activeConversation,
     isGenerating,
-    backendStatus,
     setActiveChatId,
     createNewChat,
     deleteChat,
@@ -55,7 +54,6 @@ export default function App() {
         <ChatHeader
           activeConversation={activeConversation}
           layoutMode={layoutMode}
-          backendStatus={backendStatus}
           onChangeLayout={setLayoutMode}
           onToggleSidebar={() => setSidebarOpen(prev => !prev)}
         />
