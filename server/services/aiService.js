@@ -81,7 +81,7 @@ async function callModelA_GroqOrOpenAI(prompt, history = []) {
       const completion = await groq.chat.completions.create({
         model: modelName,
         messages: formattedMessages,
-        max_tokens: 1500,
+        max_tokens: 850,
         temperature: 0.7
       });
 
@@ -286,7 +286,7 @@ Format with crisp Markdown, bold headers, and syntax-highlighted code blocks.`;
           { role: 'system', content: 'You are an elite AI meta-synthesizer. Merge multiple model answers into a single, comprehensive Master Answer.' },
           { role: 'user', content: metaPrompt }
         ],
-        max_tokens: 2000,
+        max_tokens: 850,
         temperature: 0.5
       });
 
