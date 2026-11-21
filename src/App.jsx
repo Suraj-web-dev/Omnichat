@@ -26,6 +26,33 @@ export default function App() {
   } = useChat();
 
   const [layoutMode, setLayoutMode] = useState('grid'); // 'grid' | 'stacked'
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('omnichat_theme') || 'light';
+    }
+    return 'light';
+  });
+
+  const toggleTheme = () => {
+    setTheme(prev => {
+      const next = prev === 'light' ? 'dark' : 'light';
+      try {
+        localStorage.setItem('omnichat_theme', next);
+      } catch (e) {
+        console.warn('Failed to save theme to localStorage:', e);
+      }
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.innerWidth >= 1024;
@@ -42,7 +69,7 @@ export default function App() {
   }, [messages, isGenerating]);
 
   return (
-    <div className="flex h-screen w-screen bg-[#09090b] text-zinc-100 overflow-hidden font-sans">
+    <div className={`flex h-screen w-screen bg-[#FAF8F4] dark:bg-[#121110] text-[#1c1917] dark:text-[#f5f5f4] overflow-hidden font-sans transition-colors duration-200 ${theme === 'dark' ? 'dark' : ''}`}>
       {/* Left Sidebar */}
       <Sidebar
         conversations={conversations}
@@ -56,12 +83,14 @@ export default function App() {
       />
 
       {/* Main Chat Workspace */}
-      <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-[#09090b]">
+      <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-[#FAF8F4] dark:bg-[#121110] transition-colors duration-200">
         {/* Header */}
         <ChatHeader
           activeConversation={activeConversation}
           layoutMode={layoutMode}
           sidebarOpen={sidebarOpen}
+          theme={theme}
+          onToggleTheme={toggleTheme}
           onChangeLayout={setLayoutMode}
           onToggleSidebar={() => setSidebarOpen(prev => !prev)}
         />
@@ -107,7 +136,7 @@ export default function App() {
         </div>
 
         {/* Bottom Input Area */}
-        <div className="shrink-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/90 to-transparent pt-2">
+        <div className="shrink-0 bg-gradient-to-t from-[#FAF8F4] via-[#FAF8F4]/90 dark:from-[#121110] dark:via-[#121110]/90 to-transparent pt-2">
           <ChatInput
             onSendMessage={sendMessage}
             isGenerating={isGenerating}

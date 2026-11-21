@@ -3,7 +3,6 @@ import {
   Trophy,
   Copy,
   Check,
-  Clock,
   Cpu,
   ArrowRight,
   Sparkles,
@@ -30,22 +29,22 @@ export default function MultiModelResponse({
       {/* Header Info */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3 px-1">
         <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
-          <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          <span className="text-xs font-mono text-stone-500 dark:text-stone-400 uppercase tracking-wider">
             3 Models Compared • Choose one or Synthesize all 3
           </span>
         </div>
 
         {/* Tab switcher for mobile */}
-        <div className="flex sm:hidden items-center gap-1 bg-zinc-900 border border-zinc-800 p-1 rounded-xl w-full">
+        <div className="flex sm:hidden items-center gap-1 bg-[#F5EFEB] dark:bg-[#181614] border border-[#E7E1D8] dark:border-[#2E2A26] p-1 rounded-xl w-full">
           {AVAILABLE_MODELS.map(model => (
             <button
               key={model.id}
               onClick={() => setActiveTab(model.id)}
               className={`flex-1 py-1.5 px-2 text-xs font-medium rounded-lg transition-all ${
                 activeTab === model.id
-                  ? 'bg-zinc-800 text-white shadow-xs'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  ? 'bg-white dark:bg-[#1C1A18] text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800 shadow-2xs'
+                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
               }`}
             >
               {model.name}
@@ -55,19 +54,19 @@ export default function MultiModelResponse({
       </div>
 
       {/* AI Consensus & Master Synthesis Banner */}
-      <div className="mb-4 p-3 sm:p-3.5 rounded-xl bg-gradient-to-r from-zinc-900 via-zinc-900/90 to-zinc-900 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+      <div className="mb-4 p-3.5 rounded-xl bg-gradient-to-r from-amber-50/90 via-[#FAF8F4] to-orange-50/90 dark:from-amber-950/40 dark:via-[#181614] dark:to-orange-950/30 border border-amber-300 dark:border-amber-800/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0">
-            <Sparkles className="w-4 h-4 text-zinc-200" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <Sparkles className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-zinc-100">AI Consensus & Synthesis</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-800 text-zinc-300 border border-zinc-700 rounded">
+              <span className="text-xs font-semibold text-stone-900 dark:text-stone-100">AI Consensus & Synthesis</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700 rounded font-medium">
                 Master Model
               </span>
             </div>
-            <p className="text-[11px] text-zinc-400">
+            <p className="text-[11px] text-stone-600 dark:text-stone-400">
               Can't choose? Merge the best points, clean code, and insights of Groq, Cohere & Gemini into 1 master response.
             </p>
           </div>
@@ -77,17 +76,17 @@ export default function MultiModelResponse({
           <button
             onClick={() => onSynthesize(message.id)}
             disabled={!areModelsReady || isSynthesizing}
-            className="flex items-center justify-center gap-1.5 px-3.5 py-2 bg-zinc-100 hover:bg-white text-zinc-950 font-medium text-xs rounded-lg transition-all active:scale-[0.98] disabled:opacity-40 cursor-pointer shadow-sm shrink-0"
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium text-xs rounded-lg transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer shadow-sm hover:shadow shrink-0"
             title="Combine best insights of all 3 models"
           >
             {isSynthesizing ? (
               <>
-                <Sparkles className="w-3.5 h-3.5 animate-spin text-zinc-900" />
+                <Sparkles className="w-3.5 h-3.5 animate-spin" />
                 <span>Synthesizing Best of 3...</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-3.5 h-3.5 text-zinc-900" />
+                <Sparkles className="w-3.5 h-3.5" />
                 <span>Synthesize Master Answer</span>
               </>
             )}
@@ -99,7 +98,7 @@ export default function MultiModelResponse({
       {layoutMode === 'stacked' ? (
         <div className="space-y-3">
           {/* Tab Selector Buttons */}
-          <div className="hidden sm:flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 p-1 rounded-xl">
+          <div className="hidden sm:flex items-center gap-2 bg-[#F5EFEB] dark:bg-[#181614] border border-[#E7E1D8] dark:border-[#2E2A26] p-1 rounded-xl">
             {AVAILABLE_MODELS.map(model => {
               const mData = modelsData[model.id] || {};
               const isSelectedTab = activeTab === model.id;
@@ -110,17 +109,17 @@ export default function MultiModelResponse({
                   className={`
                     flex-1 flex items-center justify-between gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer
                     ${isSelectedTab
-                      ? 'bg-zinc-800 text-white border border-zinc-700/80 shadow-xs'
-                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40 border border-transparent'
+                      ? 'bg-white dark:bg-[#1C1A18] text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-800/80 shadow-2xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 hover:bg-[#ECE4DC] dark:hover:bg-[#24211E] border border-transparent'
                     }
                   `}
                 >
                   <div className="flex items-center gap-2">
-                    <span className={`w-1.5 h-1.5 rounded-full ${isSelectedTab ? 'bg-zinc-200' : 'bg-zinc-600'}`}></span>
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSelectedTab ? 'bg-amber-500' : 'bg-stone-400'}`}></span>
                     <span>{model.name}</span>
-                    <span className="text-[10px] text-zinc-400">({model.provider})</span>
+                    <span className="text-[10px] text-stone-500 dark:text-stone-400">({model.provider})</span>
                   </div>
-                  <span className="text-[10px] font-mono text-zinc-400 bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800/80">
+                  <span className="text-[10px] font-mono text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800/60">
                     {mData.latency || '...'}
                   </span>
                 </button>
@@ -188,34 +187,34 @@ function ModelResponseCard({
 
   return (
     <div className={`
-      flex flex-col rounded-2xl bg-zinc-900/70 border border-zinc-800/80 shadow-sm overflow-hidden
-      transition-all duration-200 hover:border-zinc-700
+      flex flex-col rounded-2xl bg-white dark:bg-[#1C1A18] border border-[#E7E1D8] dark:border-[#2E2A26] shadow-sm overflow-hidden
+      transition-all duration-200 hover:border-amber-400 dark:hover:border-amber-600/70 hover:shadow-md
       ${isSingleView ? 'min-h-[340px]' : 'h-full min-h-[440px]'}
     `}>
       {/* Header */}
-      <div className="p-3.5 border-b border-zinc-800/80 bg-zinc-900/90 flex items-center justify-between">
+      <div className="p-3.5 border-b border-[#E7E1D8] dark:border-[#2E2A26] bg-[#FBF9F6] dark:bg-[#181614] flex items-center justify-between">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-medium text-zinc-200">
+          <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-xs font-semibold text-amber-700 dark:text-amber-400">
             {model.name.charAt(0)}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-xs text-zinc-100 truncate">{model.name}</h3>
-              <span className="text-[10px] text-zinc-400 bg-zinc-950 border border-zinc-800/80 px-1.5 py-0.2 rounded">
+              <h3 className="font-semibold text-xs text-stone-900 dark:text-stone-100 truncate">{model.name}</h3>
+              <span className="text-[10px] text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-1.5 py-0.2 rounded font-medium">
                 {model.provider}
               </span>
             </div>
-            <p className="text-[11px] text-zinc-400 truncate">{model.tagline}</p>
+            <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">{model.tagline}</p>
           </div>
         </div>
 
-        {/* Latency */}
-        <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-300 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800/80 shrink-0">
-          <Zap className="w-3 h-3 text-zinc-400" />
+        {/* Latency & Speed Badge */}
+        <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-800 dark:text-amber-300 bg-[#FAF8F4] dark:bg-[#121110] px-2 py-0.5 rounded-md border border-[#E7E1D8] dark:border-[#2E2A26] shrink-0 font-medium">
+          <Zap className="w-3 h-3 text-amber-600 dark:text-amber-400" />
           <span>{data.latency || '...'}</span>
           {data.tokens ? (
-            <span className="text-[10px] text-zinc-500 border-l border-zinc-800 pl-1.5 ml-0.5 hidden sm:inline">
-              {data.tokens} tokens
+            <span className="text-[10px] text-stone-400 dark:text-stone-500 border-l border-[#E7E1D8] dark:border-[#2E2A26] pl-1.5 ml-0.5 hidden sm:inline">
+              {data.tokens}t
             </span>
           ) : null}
         </div>
@@ -225,15 +224,15 @@ function ModelResponseCard({
       <div className="flex-1 p-4 overflow-y-auto">
         {isLoading ? (
           <div className="space-y-3 py-3 animate-pulse">
-            <div className="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
+            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-medium mb-3">
               <Cpu className="w-3.5 h-3.5 animate-spin" />
               <span>Generating response from {model.name}...</span>
             </div>
-            <div className="h-3.5 bg-zinc-800 rounded w-5/6"></div>
-            <div className="h-3.5 bg-zinc-800 rounded w-full"></div>
-            <div className="h-3.5 bg-zinc-800 rounded w-4/6"></div>
-            <div className="h-16 bg-zinc-800/60 rounded-lg my-3"></div>
-            <div className="h-3.5 bg-zinc-800 rounded w-3/4"></div>
+            <div className="h-3.5 bg-stone-100 dark:bg-stone-800 rounded w-5/6"></div>
+            <div className="h-3.5 bg-stone-100 dark:bg-stone-800 rounded w-full"></div>
+            <div className="h-3.5 bg-stone-100 dark:bg-stone-800 rounded w-4/6"></div>
+            <div className="h-16 bg-stone-100/70 dark:bg-stone-800/60 rounded-lg my-3"></div>
+            <div className="h-3.5 bg-stone-100 dark:bg-stone-800 rounded w-3/4"></div>
           </div>
         ) : (
           <MarkdownRenderer content={data.content} />
@@ -241,17 +240,17 @@ function ModelResponseCard({
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-zinc-800/80 bg-zinc-900/60 flex items-center justify-between gap-2.5">
+      <div className="p-3 border-t border-[#E7E1D8] dark:border-[#2E2A26] bg-[#FBF9F6] dark:bg-[#181614] flex items-center justify-between gap-2.5">
         <button
           onClick={handleCopy}
           disabled={isLoading}
-          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors disabled:opacity-40 cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs text-stone-600 dark:text-stone-400 hover:bg-[#F5EFEB] dark:hover:bg-[#24211E] hover:text-stone-900 dark:hover:text-stone-200 transition-colors disabled:opacity-40 cursor-pointer"
           title="Copy response"
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-zinc-200" />
-              <span className="text-zinc-200">Copied</span>
+              <Check className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span className="text-amber-700 dark:text-amber-400 font-medium">Copied</span>
             </>
           ) : (
             <>
@@ -264,11 +263,11 @@ function ModelResponseCard({
         <button
           onClick={onSelect}
           disabled={isLoading}
-          className="flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-zinc-100 hover:bg-white text-zinc-950 font-medium text-xs rounded-lg transition-all active:scale-[0.98] disabled:opacity-40 cursor-pointer shadow-sm group/btn"
+          className="flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium text-xs rounded-lg transition-all active:scale-[0.98] disabled:opacity-40 cursor-pointer shadow-xs hover:shadow group/btn"
         >
-          <Trophy className="w-3.5 h-3.5 text-zinc-800" />
+          <Trophy className="w-3.5 h-3.5" />
           <span>Choose this Answer</span>
-          <ArrowRight className="w-3.5 h-3.5 text-zinc-600 group-hover/btn:translate-x-0.5 transition-transform" />
+          <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
         </button>
       </div>
     </div>

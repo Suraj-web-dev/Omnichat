@@ -2,10 +2,10 @@ import confetti from 'canvas-confetti';
 
 export function fireConfetti() {
   confetti({
-    particleCount: 40,
-    spread: 55,
+    particleCount: 50,
+    spread: 60,
     origin: { y: 0.8 },
-    colors: ['#ffffff', '#e4e4e7', '#d4d4d8', '#a1a1aa', '#71717a']
+    colors: ['#D97706', '#EA580C', '#F59E0B', '#FCD34D', '#FEF3C7', '#FAF8F4']
   });
 }
 

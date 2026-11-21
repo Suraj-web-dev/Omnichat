@@ -3,31 +3,31 @@ export const AVAILABLE_MODELS = [
     id: 'gpt-4o',
     name: 'Qwen 3.8 / Llama',
     provider: 'Groq Cloud',
-    badgeColor: 'border-zinc-800 bg-zinc-900/80 text-zinc-300',
-    avatarBg: 'bg-zinc-800 text-zinc-200 border-zinc-700/80',
-    accentColor: 'zinc',
+    badgeColor: 'border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200',
+    avatarBg: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700',
+    accentColor: 'amber',
     tagline: 'High-speed reasoning & code generation',
-    avgSpeed: '120 tok/s',
+    avgSpeed: '180 tok/s',
     strengths: ['Logic & Code', 'Ultra-fast inference', 'Structured formatting']
   },
   {
     id: 'claude-3-5-sonnet',
     name: 'Command R',
     provider: 'Cohere AI',
-    badgeColor: 'border-zinc-800 bg-zinc-900/80 text-zinc-300',
-    avatarBg: 'bg-zinc-800 text-zinc-200 border-zinc-700/80',
-    accentColor: 'zinc',
+    badgeColor: 'border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200',
+    avatarBg: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-300 dark:border-orange-700',
+    accentColor: 'orange',
     tagline: 'Deep enterprise reasoning & prose',
     avgSpeed: '85 tok/s',
     strengths: ['RAG & Reasoning', 'Nuanced prose', 'System design']
   },
   {
     id: 'gemini-1-5-pro',
-    name: 'Gemini 3.6 Flash',
+    name: 'Gemini Flash',
     provider: 'Google AI',
-    badgeColor: 'border-zinc-800 bg-zinc-900/80 text-zinc-300',
-    avatarBg: 'bg-zinc-800 text-zinc-200 border-zinc-700/80',
-    accentColor: 'zinc',
+    badgeColor: 'border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200',
+    avatarBg: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700',
+    accentColor: 'amber',
     tagline: 'Large context & multimodal analysis',
     avgSpeed: '140 tok/s',
     strengths: ['Fast response', 'Broad knowledge', 'Multi-step planning']
@@ -38,8 +38,8 @@ export const SYNTHESIS_MODEL_INFO = {
   id: 'synthesized',
   name: 'Master Synthesis',
   provider: 'Tri-Model Consensus (Groq + Cohere + Gemini)',
-  badgeColor: 'border-zinc-700 bg-zinc-800 text-zinc-100',
-  avatarBg: 'bg-zinc-700 text-white border-zinc-600',
+  badgeColor: 'border-amber-300 dark:border-amber-700 bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-100',
+  avatarBg: 'bg-gradient-to-r from-amber-500 to-orange-600 text-white border-amber-400',
   tagline: 'Merged consensus and ultimate best points of all 3 models'
 };
 
