@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5001/api';
 
 /**
  * Check if the Express backend is alive and reachable
@@ -106,6 +106,23 @@ export async function synthesizeModelResponses(conversationId, messageId, prompt
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.error || 'Failed to synthesize models');
+  }
+  const json = await res.json();
+  return json.data;
+}
+
+/**
+ * Call AI Judge to evaluate and score all 3 model answers
+ */
+export async function judgeModelResponses(conversationId, messageId, prompt) {
+  const res = await fetch(`${API_BASE_URL}/conversations/${conversationId}/messages/${messageId}/judge`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Failed to judge models');
   }
   const json = await res.json();
   return json.data;

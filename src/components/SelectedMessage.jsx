@@ -8,7 +8,9 @@ import {
   RefreshCw,
   Layers,
   Sparkles,
-  Zap
+  Zap,
+  Scale,
+  Award
 } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 import { AVAILABLE_MODELS } from '../data/dummyData';
@@ -42,6 +44,9 @@ export default function SelectedMessage({
     ? AVAILABLE_MODELS
     : AVAILABLE_MODELS.filter(m => m.id !== chosenModelId);
 
+  const evaluation = message.evaluation;
+  const chosenModelEval = evaluation?.evaluations?.[chosenModelId];
+
   const handleCopy = () => {
     if (!chosenModelData.content) return;
     copyToClipboard(chosenModelData.content);
@@ -58,7 +63,7 @@ export default function SelectedMessage({
             ? 'bg-gradient-to-r from-amber-100/90 via-orange-100/70 to-amber-50 dark:from-amber-950/60 dark:via-[#24211E] dark:to-orange-950/40 border-amber-300 dark:border-amber-800/70'
             : 'bg-[#FBF9F6] dark:bg-[#181614] border-[#E7E1D8] dark:border-[#2E2A26]'
         }`}>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border shadow-2xs ${
               isSynthesized
                 ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white border-amber-500'
@@ -72,6 +77,20 @@ export default function SelectedMessage({
               <span>{isSynthesized ? 'Master Synthesis' : `Chosen: ${chosenModel.name}`}</span>
             </div>
             <span className="text-[11px] text-stone-500 dark:text-stone-400">({chosenModel.provider})</span>
+
+            {/* AI Judge Badge if evaluated */}
+            {chosenModelEval && (
+              <span className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border shadow-2xs ${
+                chosenModelEval.category === 'BEST'
+                  ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-400 text-amber-900 dark:text-amber-200'
+                  : chosenModelEval.category === 'BETTER'
+                  ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 text-amber-800 dark:text-amber-300'
+                  : 'bg-stone-100 dark:bg-stone-800 border-stone-300 text-stone-700 dark:text-stone-300'
+              }`}>
+                <Award className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                <span>Judge: {chosenModelEval.category} ({chosenModelEval.score}/10)</span>
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -94,6 +113,22 @@ export default function SelectedMessage({
         <div className="p-4 sm:p-5">
           <MarkdownRenderer content={chosenModelData.content} />
         </div>
+
+        {/* Judge's critique on chosen answer if present */}
+        {chosenModelEval?.verdict && (
+          <div className="mx-4 mb-3 p-3 rounded-xl bg-amber-50/70 dark:bg-[#181614] border border-amber-200/80 dark:border-amber-900/40">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold text-amber-800 dark:text-amber-300 uppercase tracking-wider mb-1">
+              <Scale className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+              <span>Judge's Assessment</span>
+              <span className="font-mono text-amber-700 dark:text-amber-400 font-bold ml-1">
+                ({chosenModelEval.score}/10 • {chosenModelEval.category})
+              </span>
+            </div>
+            <p className="text-[11px] text-stone-700 dark:text-stone-300 leading-relaxed">
+              {chosenModelEval.verdict}
+            </p>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="px-4 py-2.5 bg-[#FBF9F6] dark:bg-[#181614] border-t border-[#E7E1D8] dark:border-[#2E2A26] flex flex-wrap items-center justify-between gap-2 text-xs text-stone-500 dark:text-stone-400">
@@ -142,6 +177,8 @@ export default function SelectedMessage({
             <div className={`grid grid-cols-1 ${isSynthesized ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-3`}>
               {alternativeModels.map(altModel => {
                 const altData = message.models?.[altModel.id] || {};
+                const altEval = evaluation?.evaluations?.[altModel.id];
+
                 return (
                   <div
                     key={altModel.id}
@@ -153,14 +190,34 @@ export default function SelectedMessage({
                           <span className="font-semibold text-xs text-stone-900 dark:text-stone-100">{altModel.name}</span>
                           <span className="text-[10px] text-stone-500 dark:text-stone-400">({altModel.provider})</span>
                         </div>
-                        <span className="text-[10px] font-mono text-amber-800 dark:text-amber-300 bg-[#FAF8F4] dark:bg-[#121110] px-1.5 py-0.5 rounded border border-[#E7E1D8] dark:border-[#2E2A26]">
-                          {altData.latency || '...'}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          {altEval && (
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.2 rounded ${
+                              altEval.category === 'BEST'
+                                ? 'bg-amber-500 text-white'
+                                : altEval.category === 'BETTER'
+                                ? 'bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200'
+                                : 'bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+                            }`}>
+                              {altEval.category} • {altEval.score}
+                            </span>
+                          )}
+                          <span className="text-[10px] font-mono text-amber-800 dark:text-amber-300 bg-[#FAF8F4] dark:bg-[#121110] px-1.5 py-0.5 rounded border border-[#E7E1D8] dark:border-[#2E2A26]">
+                            {altData.latency || '...'}
+                          </span>
+                        </div>
                       </div>
 
                       <div className="text-xs text-stone-700 dark:text-stone-300 max-h-48 overflow-y-auto mb-3">
                         <MarkdownRenderer content={altData.content} />
                       </div>
+
+                      {altEval?.verdict && (
+                        <div className="mb-2 p-2 rounded-lg bg-amber-50/60 dark:bg-[#151413] border border-amber-200/60 dark:border-amber-900/40 text-[10px] text-stone-600 dark:text-stone-400">
+                          <span className="font-semibold text-amber-800 dark:text-amber-300 mr-1">Critique:</span>
+                          {altEval.verdict}
+                        </div>
+                      )}
                     </div>
 
                     <button

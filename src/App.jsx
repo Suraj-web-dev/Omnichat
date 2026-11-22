@@ -15,6 +15,7 @@ export default function App() {
     activeConversation,
     isGenerating,
     synthesizingMessageId,
+    judgingMessageId,
     setActiveChatId,
     createNewChat,
     deleteChat,
@@ -22,7 +23,8 @@ export default function App() {
     sendMessage,
     selectModelResponse,
     unselectModelResponse,
-    synthesizeModelAnswers
+    synthesizeModelAnswers,
+    judgeModelAnswers
   } = useChat();
 
   const [layoutMode, setLayoutMode] = useState('grid'); // 'grid' | 'stacked'
@@ -125,7 +127,9 @@ export default function App() {
                     layoutMode={layoutMode}
                     onSelectModel={selectModelResponse}
                     onSynthesize={synthesizeModelAnswers}
+                    onJudge={judgeModelAnswers}
                     isSynthesizing={synthesizingMessageId === message.id}
+                    isJudging={judgingMessageId === message.id}
                     isGenerating={isGenerating}
                   />
                 );

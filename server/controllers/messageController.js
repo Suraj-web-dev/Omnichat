@@ -1,5 +1,5 @@
 import { Conversation } from '../models/Conversation.js';
-import { generate3ModelResponses, synthesizeModelResponses } from '../services/aiService.js';
+import { generate3ModelResponses, synthesizeModelResponses, evaluateModelResponses } from '../services/aiService.js';
 import { inMemoryConversations } from './conversationController.js';
 
 function generateId() {
@@ -200,7 +200,66 @@ export async function synthesizeAndSelectWinner(req, res) {
   }
 }
 
-// 3. Get all messages for a conversation
+// 4. AI Judge: Evaluate and score the 3 model responses
+export async function judgeAndScoreMessage(req, res) {
+  try {
+    const { id: conversationId, messageId } = req.params;
+    const isDbConnected = Conversation.db?.readyState === 1;
+
+    let conversation;
+    if (isDbConnected) {
+      conversation = await Conversation.findOne({ id: conversationId });
+    } else {
+      conversation = inMemoryConversations.find(c => c.id === conversationId);
+    }
+
+    if (!conversation) {
+      return res.status(404).json({ success: false, error: 'Conversation not found' });
+    }
+
+    const msgIndex = conversation.messages.findIndex(m => m.id === messageId);
+    if (msgIndex === -1) {
+      return res.status(404).json({ success: false, error: 'Message not found' });
+    }
+
+    const targetMsg = conversation.messages[msgIndex];
+
+    // Find original prompt
+    let prompt = req.body.prompt;
+    if (!prompt) {
+      if (msgIndex > 0 && conversation.messages[msgIndex - 1]?.sender === 'user') {
+        prompt = conversation.messages[msgIndex - 1].text;
+      } else {
+        prompt = conversation.title || 'General Query';
+      }
+    }
+
+    console.log(`[MessageController] AI Judge evaluating message: ${messageId}`);
+    const evaluation = await evaluateModelResponses(prompt, targetMsg.models);
+
+    targetMsg.evaluation = evaluation;
+    conversation.updatedAt = new Date().toISOString();
+
+    if (isDbConnected) {
+      conversation.markModified('messages');
+      await conversation.save();
+    }
+
+    return res.json({
+      success: true,
+      message: 'Models successfully judged and scored',
+      data: {
+        evaluation,
+        message: targetMsg
+      }
+    });
+  } catch (err) {
+    console.error('[MessageController] Error judging models:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+// 5. Get all messages for a conversation
 export async function getMessagesByConversation(req, res) {
   try {
     const { id: conversationId } = req.params;

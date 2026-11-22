@@ -17,6 +17,7 @@ export const MessageSchema = new mongoose.Schema({
   text: { type: String }, // For user messages
   timestamp: { type: String, default: () => new Date().toISOString() },
   selectedModelId: { type: String, default: null }, // Chosen winner model
+  evaluation: { type: mongoose.Schema.Types.Mixed, default: null }, // AI Judge evaluation & scores
   models: {
     type: Map,
     of: ModelResponseSchema,
